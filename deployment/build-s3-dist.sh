@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # This assumes all of the OS-level configuration has been completed and git repo has already been cloned
 #sudo yum-config-manager --enable epel
@@ -32,14 +33,14 @@ echo "cp -f serverless-image-handler.template dist"
 cp -f serverless-image-handler.template dist
 echo "Updating code source bucket in template with $1"
 replace="s/%%BUCKET_NAME%%/$1/g"
-echo "sed -i '' -e $replace dist/serverless-image-handler.template"
-sed -i '' -e $replace dist/serverless-image-handler.template
+echo "sed -i -e $replace dist/serverless-image-handler.template"
+sed -i -e $replace dist/serverless-image-handler.template
 
 # SO-SIH-154 - 07/16/2018 - Build fixes
 # Adding variable for artifact version
 replace="s/%%VERSION%%/$2/g"
-echo "sed -i '' -e $replace dist/serverless-image-handler.template"
-sed -i '' -e $replace dist/serverless-image-handler.template
+echo "sed -i -e $replace dist/serverless-image-handler.template"
+sed -i -e $replace dist/serverless-image-handler.template
 
 echo "Creating UI ZIP file"
 cd $deployment_dir/../source/ui
@@ -139,13 +140,13 @@ cd $VIRTUAL_ENV
 pwd
 echo 'yum install nasm autoconf automake libtool -y'
 yum install nasm autoconf automake libtool -y
-echo 'wget https://github.com/mozilla/mozjpeg/releases/download/v3.2/mozjpeg-3.2-release-source.tar.gz'
-wget https://github.com/mozilla/mozjpeg/releases/download/v3.2/mozjpeg-3.2-release-source.tar.gz
-tar -zxvf mozjpeg-3.2-release-source.tar.gz
-cd mozjpeg
+echo 'wget https://github.com/mozilla/mozjpeg/archive/v3.3.1.tar.gz'
+wget https://github.com/mozilla/mozjpeg/archive/v3.3.1.tar.gz
+tar -zxvf v3.3.1.tar.gz
+cd mozjpeg-3.3.1
 autoreconf -fiv
 mkdir build && cd build
-sh ../configure --disable-shared --enable-static
+sh ../configure --enable-static
 make install prefix=/var/task libdir=/var/task
 cp -f /var/task/libjpeg.so* $VIRTUAL_ENV/bin/lib
 # SO-SIH-170 - 08/15/2018 - mozjpeg path
